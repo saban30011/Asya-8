@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <title>Türk Devletleri Haritası</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+     integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin=""/>
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+     integrity="sha256-vxvLQN8aG+gSCrWqNBo2N+pDzME0mZTS9403F2fFQTk=" crossorigin=""></script>
+    <style>
+        /* Tüm CSS kodların aynen burada olacak */
+        body {
+            font-family: sans-serif;
+            line-height: 1.6;
+            margin: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        h1 {
+            color: #333;
+            margin-bottom: 20px;
+        }
+        #map {
+            height: 550px;
+            width: 90%;
+            max-width: 1000px;
+            border: 1px solid #ccc;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+        #info-panel {
+            width: 90%;
+            max-width: 1000px;
+            padding: 20px;
+            border: 1px solid #ccc;
+            background-color: #f9f9f9;
+            min-height: 150px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        #info-panel h2 {
+            margin-top: 0;
+            color: #555;
+            border-bottom: 1px solid #eee;
+            padding-bottom: 10px;
+        }
+        #info-panel p { margin: 8px 0; }
+        #info-panel strong {
+            display: inline-block;
+            min-width: 130px;
+            color: #444;
+        }
+        #info-panel ul {
+            list-style: disc;
+            margin-left: 150px;
+            padding-left: 0;
+            margin-top: -18px;
+        }
+        #info-panel li { margin-bottom: 3px; }
+        @media (max-width: 600px) {
+            #map { height: 400px; width: 95%; }
+            #info-panel { width: 95%; }
+            #info-panel strong { min-width: 100px; }
+            #info-panel ul { margin-left: 110px; }
+        }
+    </style>
+</head>
+<body>
+    <h1>Türk Devletleri Haritası</h1>
+    <div id="map"></div>
+    <div id="info-panel">
+        <h2>Bilgi Paneli</h2>
+        <p>Bir ülkeye tıklayarak detaylı bilgi alabilirsiniz.</p>
+    </div>
+
+    <script>
+        const map = L.map('map').setView([43.3, 65], 4.5);
+
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '© OpenStreetMap katkıcıları'
+        }).addTo(map);
+
+        const countries = [
+            {
+                name: "Türkiye",
+                capital: "Ankara",
+                coords: [39.9208, 32.8541],
+                population: "85 milyon+",
+                language: "Türkçe",
+                sources: ["https://tr.wikipedia.org/wiki/Türkiye"]
+            },
+            {
+                name: "Azerbaycan",
+                capital: "Bakü",
+                coords: [40.4093, 49.8671],
+                population: "10 milyon+",
+                language: "Azerice",
+                sources: ["https://tr.wikipedia.org/wiki/Azerbaycan"]
+            },
+            {
+                name: "Kazakistan",
+                capital: "Astana",
+                coords: [51.1605, 71.4704],
+                population: "19 milyon+",
+                language: "Kazakça, Rusça",
+                sources: ["https://tr.wikipedia.org/wiki/Kazakistan"]
+            },
+            {
+                name: "Özbekistan",
+                capital: "Taşkent",
+                coords: [41.3111, 69.2797],
+                population: "36 milyon+",
+                language: "Özbekçe",
+                sources: ["https://tr.wikipedia.org/wiki/Özbekistan"]
+            },
+            {
+                name: "Türkmenistan",
+                capital: "Aşkabat",
+                coords: [37.95, 58.3833],
+                population: "6 milyon+",
+                language: "Türkmence",
+                sources: ["https://tr.wikipedia.org/wiki/Türkmenistan"]
+            },
+            {
+                name: "Kırgızistan",
+                capital: "Bişkek",
+                coords: [42.8746, 74.5698],
+                population: "7 milyon+",
+                language: "Kırgızca, Rusça",
+                sources: ["https://tr.wikipedia.org/wiki/Kırgızistan"]
+            }
+        ];
+
+        countries.forEach(country => {
+            const marker = L.marker(country.coords).addTo(map);
+            marker.bindPopup(<b>${country.name}</b><br>${country.capital});
+            marker.on('click', () => {
+                document.getElementById("info-panel").innerHTML = `
+                    <h2>${country.name}</h2>
+                    <p><strong>Başkent:</strong> ${country.capital}</p>
+                    <p><strong>Nüfus:</strong> ${country.population}</p>
+                    <p><strong>Resmi Dil(ler):</strong> ${country.language}</p>
+                    <p><strong>Kaynaklar:</strong></p>
+                    <ul>
+                        ${country.sources.map(src => <li><a href="${src}" target="_blank">${src}</a></li>).join('')}
+                    </ul>
+                `;
+            });
+        });
+    </script>
+</body>
+</html>
